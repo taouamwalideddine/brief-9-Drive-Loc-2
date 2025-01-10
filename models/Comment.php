@@ -27,6 +27,14 @@ class Comment {
         return $stmt;
     }
 
+    public function readOne() {
+        $query = "SELECT * FROM " . $this->table . " WHERE id = :id LIMIT 0,1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function create() {
         $query = "INSERT INTO " . $this->table . " 
                   SET user_id=:user_id, article_id=:article_id, content=:content";
@@ -46,28 +54,6 @@ class Comment {
         }
         return false;
     }
-
-    public function update() {
-        $query = "UPDATE " . $this->table . "
-                  SET content=:content
-                  WHERE id=:id AND user_id=:user_id";
-        
-        $stmt = $this->conn->prepare($query);
-
-        $this->content = htmlspecialchars(strip_tags($this->content));
-        $this->id = htmlspecialchars(strip_tags($this->id));
-        $this->user_id = htmlspecialchars(strip_tags($this->user_id));
-
-        $stmt->bindParam(":content", $this->content);
-        $stmt->bindParam(":id", $this->id);
-        $stmt->bindParam(":user_id", $this->user_id);
-
-        if($stmt->execute()) {
-            return true;
-        }
-        return false;
-    }
-
     public function delete() {
         $query = "DELETE FROM " . $this->table . " WHERE id=:id AND user_id=:user_id";
         

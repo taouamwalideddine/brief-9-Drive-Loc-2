@@ -48,23 +48,19 @@ class Reservation {
     }
 }
 
-// Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
 
-// Ensure vehicle ID is passed via GET
 if (!isset($_GET['vehicle_id'])) {
     die("Invalid access - vehicle ID is missing.");
 }
 
-// Initialize database and reservation class
 $database = new Database();
 $db = $database->getConnection();
 $reservation = new Reservation($db);
 
-// Redirect to booking.php with vehicle details
 $vehicleId = $_GET['vehicle_id'];
 header("Location: booking.php?vehicle_id=" . urlencode($vehicleId));
 exit();
